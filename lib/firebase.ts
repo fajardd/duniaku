@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAaZJ3P8yPmOb--0XZ3YKf88UhpBwEergc",
-  authDomain: "efdate-ba5f3.firebaseapp.com",
-  projectId: "efdate-ba5f3",
-  storageBucket: "efdate-ba5f3.firebasestorage.app",
-  messagingSenderId: "997522252855",
-  appId: "1:997522252855:web:8ed8285076df8dd5ef8bb2",
-  measurementId: "G-23N00FGGBW",
+  apiKey: "AIzaSyBTOWwqxnpmdBYSLQPwaWMFX8oDkbMiWVw",
+  authDomain: "clara-25042026.firebaseapp.com",
+  projectId: "clara-25042026",
+  storageBucket: "clara-25042026.firebasestorage.app",
+  messagingSenderId: "392737208426",
+  appId: "1:392737208426:web:2fec2cd7261e1f59007213",
+  measurementId: "G-RXD9VNTKFD",
 };
 
 const app = initializeApp(firebaseConfig);
