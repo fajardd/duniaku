@@ -1,7 +1,14 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { Music, VolumeX, ChevronRight, ChevronLeft, Lock, Heart } from "lucide-react";
+import {
+  Music,
+  VolumeX,
+  ChevronRight,
+  ChevronLeft,
+  Lock,
+  Heart,
+} from "lucide-react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,8 +29,9 @@ interface HistoryItem {
 
 interface HomeContentProps {
   images: {
-    siang: StaticImageData;
-    malam: StaticImageData;
+    bioskop: StaticImageData;
+    photoBooth: StaticImageData;
+    kebunKopi: StaticImageData;
   };
 }
 
@@ -47,6 +55,9 @@ export default function HomeContent({ images }: HomeContentProps) {
   const [error, setError] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [shakeKey, setShakeKey] = useState(0);
+  const [previewImage, setPreviewImage] = useState<StaticImageData | null>(
+    null,
+  );
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -55,15 +66,23 @@ export default function HomeContent({ images }: HomeContentProps) {
   const history: HistoryItem[] = [
     {
       id: 1,
-      image: images.siang,
-      date: "2026-03-10",
-      description: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
+      image: images.bioskop,
+      date: "2026-04-25",
+      description:
+        "Nonton film Ghost In The Cell di CGV 21 Pakuwon Mall Yogyakarta",
     },
     {
       id: 2,
-      image: images.malam,
-      date: "2026-04-12",
-      description: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
+      image: images.photoBooth,
+      date: "2026-04-26",
+      description: "Photobooth di Malioboro",
+    },
+    {
+      id: 3,
+      image: images.kebunKopi,
+      date: "2026-05-14",
+      description:
+        "Explore Wonosobo ke Kebun Teh Sikatok yang swegerrr dan sejuk",
     },
   ];
 
@@ -114,9 +133,17 @@ export default function HomeContent({ images }: HomeContentProps) {
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
+              transition={{
+                type: "spring",
+                stiffness: 200,
+                damping: 15,
+                delay: 0.2,
+              }}
               className="w-16 h-16 rounded-full flex items-center justify-center"
-              style={{ background: "rgba(232, 168, 124, 0.15)", border: "1px solid rgba(232, 168, 124, 0.25)" }}
+              style={{
+                background: "rgba(232, 168, 124, 0.15)",
+                border: "1px solid rgba(232, 168, 124, 0.25)",
+              }}
             >
               <Lock className="w-7 h-7" style={{ color: "#e8a87c" }} />
             </motion.div>
@@ -206,7 +233,9 @@ export default function HomeContent({ images }: HomeContentProps) {
             <div className="h-3 w-3/4 mx-auto rounded-full animate-shimmer" />
             <div className="h-3 w-1/2 mx-auto rounded-full animate-shimmer" />
           </div>
-          <p className="text-sm mt-2" style={{ color: "#a89b8c" }}>Memuat dunia...</p>
+          <p className="text-sm mt-2" style={{ color: "#a89b8c" }}>
+            Memuat dunia...
+          </p>
         </div>
       </div>
     );
@@ -256,23 +285,30 @@ export default function HomeContent({ images }: HomeContentProps) {
           color: isPlaying ? "#0b0b1a" : "#f0e6d3",
         }}
       >
-        {isPlaying ? <Music className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+        {isPlaying ? (
+          <Music className="w-4 h-4" />
+        ) : (
+          <VolumeX className="w-4 h-4" />
+        )}
       </motion.button>
 
       {/* Step indicator */}
       <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex gap-2">
-        {[0, 1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="h-1.5 rounded-full transition-all duration-500"
-            style={{
-              width: step === i ? "2rem" : "0.375rem",
-              background: step === i
-                ? "linear-gradient(90deg, #e8a87c, #d4a5a5)"
-                : "rgba(255, 255, 255, 0.15)",
-            }}
-          />
-        ))}
+        {Array.from({ length: 1 + Math.ceil(history.length / 3) }).map(
+          (_, i) => (
+            <div
+              key={i}
+              className="h-1.5 rounded-full transition-all duration-500"
+              style={{
+                width: step === i ? "2rem" : "0.375rem",
+                background:
+                  step === i
+                    ? "linear-gradient(90deg, #e8a87c, #d4a5a5)"
+                    : "rgba(255, 255, 255, 0.15)",
+              }}
+            />
+          ),
+        )}
       </div>
 
       <div className="relative z-10 flex flex-col justify-center items-center p-6 min-h-screen">
@@ -292,7 +328,11 @@ export default function HomeContent({ images }: HomeContentProps) {
                 {/* Decorative flower */}
                 <motion.div
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  transition={{
+                    duration: 20,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
                   className="text-5xl opacity-50"
                 >
                   ✿
@@ -309,23 +349,28 @@ export default function HomeContent({ images }: HomeContentProps) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
-                    className="text-base leading-relaxed"
-                    style={{ color: "#d4cec4", fontFamily: "var(--font-inter), sans-serif" }}
+                    className="text-sm leading-relaxed"
+                    style={{
+                      color: "#d4cec4",
+                      fontFamily: "var(--font-inter), sans-serif",
+                    }}
                   >
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. In
-                    totam ipsum officiis, at error reprehenderit illo beatae ab vero
-                    iure animi nihil voluptas perspiciatis maiores ipsam quia magni
-                    blanditiis aut?
+                    Terima kasih sudah hadir dan membuatku mengenalmu. Sejak
+                    awal kita mulai berbincang, aku sudah merasa senang karena
+                    setiap obrolan yang kita lalui selalu membuatku bahagia. Aku
+                    harap kamu suka, ya, Clara Claurita Salindri.
                   </motion.p>
                 </div>
-
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
                   className="flex gap-3"
                 >
-                  <button onClick={nextStep} className="btn-gradient flex items-center gap-2 text-sm">
+                  <button
+                    onClick={nextStep}
+                    className="btn-gradient flex items-center gap-2 text-sm"
+                  >
                     Mulai Perjalanan
                     <ChevronRight className="w-4 h-4" />
                   </button>
@@ -333,139 +378,10 @@ export default function HomeContent({ images }: HomeContentProps) {
               </motion.div>
             )}
 
-            {/* ======= STEP 1: MEMORY 1 ======= */}
-            {step === 1 && (
+            {/* ======= STEP 1+: HISTORY ======= */}
+            {step >= 1 && (
               <motion.div
-                key="step1"
-                variants={pageVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={pageTransition}
-                className="flex flex-col justify-center items-center gap-7"
-              >
-                <div className="image-frame w-full">
-                  <Image
-                    src={images.siang}
-                    alt="Edelwis siang hari"
-                    priority
-                    className="w-full h-auto object-cover"
-                    sizes="(max-width: 448px) 100vw, 448px"
-                  />
-                </div>
-
-                <div className="glass-card p-6 w-full space-y-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full" style={{ background: "#e8a87c" }} />
-                    <span className="text-xs font-medium" style={{ color: "#a89b8c" }}>
-                      28 Januari 2025 · 02:00
-                    </span>
-                  </div>
-                  <p
-                    className="text-base leading-relaxed"
-                    style={{ color: "#d4cec4", fontFamily: "var(--font-inter), sans-serif" }}
-                  >
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. In
-                    totam ipsum officiis, at error reprehenderit illo beatae ab vero
-                    iure animi nihil voluptas perspiciatis maiores ipsam quia magni
-                    blanditiis aut?
-                  </p>
-                </div>
-
-                <div className="flex gap-3">
-                  <button onClick={backStep} className="btn-ghost-romantic flex items-center gap-2 text-sm">
-                    <ChevronLeft className="w-4 h-4" />
-                    Kembali
-                  </button>
-                  <button onClick={nextStep} className="btn-gradient flex items-center gap-2 text-sm">
-                    Lanjut
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </motion.div>
-            )}
-
-            {/* ======= STEP 2: GALLERY ======= */}
-            {step === 2 && (
-              <motion.div
-                key="step2"
-                variants={pageVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={pageTransition}
-                className="flex flex-col justify-center items-center gap-7"
-              >
-                <div className="glass-card p-6 w-full">
-                  <p
-                    className="text-base leading-relaxed text-center"
-                    style={{ color: "#d4cec4", fontFamily: "var(--font-inter), sans-serif" }}
-                  >
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus
-                    minima exercitationem voluptas perspiciatis quibusdam?
-                    Reprehenderit necessitatibus, tempore, eligendi nisi delectus
-                    porro alias ipsa ratione, beatae exercitationem earum amet fugit
-                    est.
-                  </p>
-                </div>
-
-                <div className="grid gap-4 w-full">
-                  <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.15 }}
-                  >
-                    <div className="image-frame">
-                      <Image
-                        src={images.siang}
-                        alt="Edelwis siang hari"
-                        priority
-                        className="w-full h-auto object-cover"
-                        sizes="(max-width: 448px) 100vw, 448px"
-                      />
-                    </div>
-                    <p className="text-xs mt-2 text-center" style={{ color: "#a89b8c" }}>
-                      28 Januari 2025 · 02:00
-                    </p>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    <div className="image-frame">
-                      <Image
-                        src={images.malam}
-                        alt="Edelwis malam hari"
-                        priority
-                        className="w-full h-auto object-cover"
-                        sizes="(max-width: 448px) 100vw, 448px"
-                      />
-                    </div>
-                    <p className="text-xs mt-2 text-center" style={{ color: "#a89b8c" }}>
-                      28 Januari 2025 · 02:00
-                    </p>
-                  </motion.div>
-                </div>
-
-                <div className="flex gap-3">
-                  <button onClick={backStep} className="btn-ghost-romantic flex items-center gap-2 text-sm">
-                    <ChevronLeft className="w-4 h-4" />
-                    Kembali
-                  </button>
-                  <button onClick={nextStep} className="btn-gradient flex items-center gap-2 text-sm">
-                    Lanjut
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </motion.div>
-            )}
-
-            {/* ======= STEP 3: HISTORY ======= */}
-            {step === 3 && (
-              <motion.div
-                key="step3"
+                key={`step-history-${step}`}
                 variants={pageVariants}
                 initial="initial"
                 animate="animate"
@@ -477,74 +393,133 @@ export default function HomeContent({ images }: HomeContentProps) {
                   className="text-2xl font-bold text-gradient"
                   style={{ fontFamily: "var(--font-playfair), serif" }}
                 >
-                  Kenangan Kita
+                  Kenangan
                 </h2>
 
                 {/* Timeline */}
                 <div className="w-full space-y-4">
-                  {history.map((item, index) => (
-                    <motion.div
-                      key={item.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.2 }}
-                      className="glass-card p-5 flex gap-4 items-start"
-                    >
-                      <div className="flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden">
-                        <Image
-                          src={item.image}
-                          alt={`Memory ${item.id}`}
-                          priority
-                          className="w-full h-full object-cover"
-                          sizes="56px"
-                        />
-                      </div>
-                      <div className="flex-1 space-y-1.5">
-                        <div className="flex items-center gap-2">
-                          <Heart className="w-3 h-3" style={{ color: "#e8a87c" }} />
-                          <span className="text-xs" style={{ color: "#a89b8c" }}>
-                            {new Date(item.date).toLocaleDateString("id-ID", {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            })}
-                          </span>
-                        </div>
-                        <p
-                          className="text-sm leading-relaxed"
-                          style={{ color: "#d4cec4" }}
+                  {[...history]
+                    .reverse()
+                    .slice((step - 1) * 3, step * 3)
+                    .map((item, index) => (
+                      <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.15 }}
+                        className="glass-card p-5 flex gap-4 items-start"
+                      >
+                        <div
+                          className="flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden cursor-pointer"
+                          onClick={() => setPreviewImage(item.image)}
                         >
-                          {item.description}
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))}
+                          <Image
+                            src={item.image}
+                            alt={`Memory ${item.id}`}
+                            priority
+                            className="w-full h-full object-cover transition-transform hover:scale-110"
+                            sizes="56px"
+                          />
+                        </div>
+                        <div className="flex-1 space-y-1.5">
+                          <div className="flex items-center gap-2">
+                            <Heart
+                              className="w-3 h-3"
+                              style={{ color: "#e8a87c" }}
+                            />
+                            <span
+                              className="text-xs"
+                              style={{ color: "#a89b8c" }}
+                            >
+                              {new Date(item.date).toLocaleDateString("id-ID", {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                              })}
+                            </span>
+                          </div>
+                          <p
+                            className="text-sm leading-relaxed"
+                            style={{ color: "#d4cec4" }}
+                          >
+                            {item.description}
+                          </p>
+                        </div>
+                      </motion.div>
+                    ))}
                 </div>
 
                 <div className="flex gap-3">
-                  <button onClick={backStep} className="btn-ghost-romantic flex items-center gap-2 text-sm">
+                  <button
+                    onClick={backStep}
+                    className="btn-ghost-romantic flex items-center gap-2 text-sm"
+                  >
                     <ChevronLeft className="w-4 h-4" />
                     Kembali
                   </button>
+                  {step - 1 < Math.ceil(history.length / 3) - 1 && (
+                    <button
+                      onClick={nextStep}
+                      className="btn-gradient flex items-center gap-2 text-sm"
+                    >
+                      Lanjut
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
 
-                {/* End decoration */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                  className="text-center space-y-2 mt-4"
-                >
-                  <div className="animate-heart-beat text-3xl">💕</div>
-                  <p className="text-xs" style={{ color: "#a89b8c" }}>
-                    — sampai kapanpun —
-                  </p>
-                </motion.div>
+                {/* End decoration only on the last page */}
+                {step - 1 === Math.ceil(history.length / 3) - 1 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                    className="text-center space-y-2 mt-4"
+                  >
+                    <div className="animate-heart-beat text-3xl">💕</div>
+                    <p className="text-xs" style={{ color: "#a89b8c" }}>
+                      — sampai kapanpun —
+                    </p>
+                  </motion.div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </div>
+
+      {/* ======= IMAGE PREVIEW MODAL ======= */}
+      <AnimatePresence>
+        {previewImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setPreviewImage(null)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              className="relative max-w-3xl w-full max-h-screen p-4 flex flex-col justify-center items-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src={previewImage}
+                alt="Preview"
+                className="max-w-full max-h-[85vh] w-auto h-auto rounded-lg object-contain shadow-2xl"
+              />
+              <button
+                onClick={() => setPreviewImage(null)}
+                className="absolute top-6 right-6 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/70 transition"
+              >
+                ✕
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
