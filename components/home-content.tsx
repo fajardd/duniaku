@@ -22,16 +22,24 @@ import Particles from "@/components/particles";
 
 interface HistoryItem {
   id: number;
-  image: StaticImageData;
+  images: StaticImageData[];
   date: string;
   description: string;
 }
 
 interface HomeContentProps {
   images: {
-    bioskop: StaticImageData;
-    photoBooth: StaticImageData;
-    kebunKopi: StaticImageData;
+    bioskop25426: StaticImageData;
+    marugameUdon25426: StaticImageData;
+    chaTime25426: StaticImageData;
+    photoBooth26426: StaticImageData;
+    iceCream26426: StaticImageData;
+    kebunKopi14526: StaticImageData;
+    playStation2026: StaticImageData;
+    playStation20626: StaticImageData;
+    photoBooth2126: StaticImageData;
+    photoBooth21626: StaticImageData;
+    iceCream2126: StaticImageData;
   };
 }
 
@@ -55,9 +63,10 @@ export default function HomeContent({ images }: HomeContentProps) {
   const [error, setError] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [shakeKey, setShakeKey] = useState(0);
-  const [previewImage, setPreviewImage] = useState<StaticImageData | null>(
+  const [previewImages, setPreviewImages] = useState<StaticImageData[] | null>(
     null,
   );
+  const [currentPreviewIndex, setCurrentPreviewIndex] = useState(0);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -66,25 +75,62 @@ export default function HomeContent({ images }: HomeContentProps) {
   const history: HistoryItem[] = [
     {
       id: 1,
-      image: images.bioskop,
+      images: [
+        images.bioskop25426,
+        images.marugameUdon25426,
+        images.chaTime25426,
+      ],
       date: "2026-04-25",
       description:
-        "Nonton film Ghost In The Cell di CGV 21 Pakuwon Mall Yogyakarta",
+        "Nonton film Ghost In The Cell di CGV 21, makan mi udon Marugame sama minum Chatime di Pakuwon Mall Yogyakarta",
     },
     {
       id: 2,
-      image: images.photoBooth,
+      images: [images.photoBooth26426, images.iceCream26426],
       date: "2026-04-26",
-      description: "Photobooth di Malioboro",
+      description:
+        "Pertamakali photobooth & mam eskrim bareng sama adek di Malioboro",
     },
     {
       id: 3,
-      image: images.kebunKopi,
+      images: [images.kebunKopi14526],
       date: "2026-05-14",
       description:
-        "Explore Wonosobo ke Kebun Teh Sikatok yang swegerrr dan sejuk",
+        "Explore sepontan mau kemana dan kita memilih moncoba pergi ke Kebun Teh Sikatok di Wonosobo yang segar dengan suasana kabut yang menyelimuti sepanjang perjalanan",
+    },
+    {
+      id: 4,
+      images: [images.playStation20626, images.playStation2026],
+      date: "2026-06-20",
+      description:
+        "Main game di MainPsId dari jam 2 siang sampai 3 siang yang seharusnya agenda jam 11 siang dengan ditemani makan nasi goreng buatan adek dan kita gagal malam mingguan karena di rumah mas Fajar ada agenda pengajian",
+    },
+    {
+      id: 5,
+      images: [
+        images.photoBooth2126,
+        images.photoBooth21626,
+        images.iceCream2126,
+      ],
+      date: "2026-06-21",
+      description:
+        "Ngedate di Malioboro jam 10 malem sehabis adek ngambek karena agenda main ke pantai Glagah gagal jadi diubah main ke Malioboro untuk foto di photobooth dan makan eskrim di Malio Gelato",
     },
   ];
+
+  const nextPreview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (previewImages && currentPreviewIndex < previewImages.length - 1) {
+      setCurrentPreviewIndex((prev) => prev + 1);
+    }
+  };
+
+  const prevPreview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (previewImages && currentPreviewIndex > 0) {
+      setCurrentPreviewIndex((prev) => prev - 1);
+    }
+  };
 
   const toggleMusic = () => {
     if (!audioRef.current) return;
@@ -356,9 +402,9 @@ export default function HomeContent({ images }: HomeContentProps) {
                     }}
                   >
                     Terima kasih sudah hadir dan membuatku mengenalmu. Sejak
-                    awal kita mulai berbincang, aku sudah merasa senang karena
-                    setiap obrolan yang kita lalui selalu membuatku bahagia. Aku
-                    harap kamu suka, ya, Clara Claurita Salindri.
+                    awal kita mulai berbincang, mas sudah merasa senang karena
+                    setiap obrolan yang kita lalui selalu membuat mas bahagia.
+                    Mas harap adek suka, Clara Claurita Salindri.
                   </motion.p>
                 </div>
                 <motion.div
@@ -410,16 +456,24 @@ export default function HomeContent({ images }: HomeContentProps) {
                         className="glass-card p-5 flex gap-4 items-start"
                       >
                         <div
-                          className="flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden cursor-pointer"
-                          onClick={() => setPreviewImage(item.image)}
+                          className="flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden cursor-pointer relative"
+                          onClick={() => {
+                            setPreviewImages(item.images);
+                            setCurrentPreviewIndex(0);
+                          }}
                         >
                           <Image
-                            src={item.image}
+                            src={item.images[0]}
                             alt={`Memory ${item.id}`}
                             priority
                             className="w-full h-full object-cover transition-transform hover:scale-110"
                             sizes="56px"
                           />
+                          {item.images.length > 1 && (
+                            <div className="absolute bottom-1 right-1 bg-black/60 backdrop-blur-sm text-white text-[10px] px-1.5 py-0.5 rounded-md font-medium">
+                              1/{item.images.length}
+                            </div>
+                          )}
                         </div>
                         <div className="flex-1 space-y-1.5">
                           <div className="flex items-center gap-2">
@@ -439,7 +493,7 @@ export default function HomeContent({ images }: HomeContentProps) {
                             </span>
                           </div>
                           <p
-                            className="text-sm leading-relaxed"
+                            className="text-sm leading-relaxed text-justify"
                             style={{ color: "#d4cec4" }}
                           >
                             {item.description}
@@ -490,29 +544,76 @@ export default function HomeContent({ images }: HomeContentProps) {
 
       {/* ======= IMAGE PREVIEW MODAL ======= */}
       <AnimatePresence>
-        {previewImage && (
+        {previewImages && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setPreviewImage(null)}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
+            onClick={() => setPreviewImages(null)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
           >
             <motion.div
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.95 }}
-              className="relative max-w-3xl w-full max-h-screen p-4 flex flex-col justify-center items-center"
+              className="relative max-w-4xl w-full max-h-screen p-4 flex flex-col justify-center items-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <Image
-                src={previewImage}
-                alt="Preview"
-                className="max-w-full max-h-[85vh] w-auto h-auto rounded-lg object-contain shadow-2xl"
-              />
+              <div className="relative w-full flex justify-center items-center group">
+                {currentPreviewIndex > 0 && (
+                  <button
+                    onClick={prevPreview}
+                    className="absolute left-2 md:left-4 z-10 bg-white/10 hover:bg-white/20 text-white w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all opacity-0 group-hover:opacity-100"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
+                )}
+
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentPreviewIndex}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Image
+                      src={previewImages[currentPreviewIndex]}
+                      alt="Preview"
+                      className="max-w-full max-h-[85vh] w-auto h-auto rounded-lg object-contain shadow-2xl"
+                    />
+                  </motion.div>
+                </AnimatePresence>
+
+                {currentPreviewIndex < previewImages.length - 1 && (
+                  <button
+                    onClick={nextPreview}
+                    className="absolute right-2 md:right-4 z-10 bg-white/10 hover:bg-white/20 text-white w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all opacity-0 group-hover:opacity-100"
+                  >
+                    <ChevronRight className="w-6 h-6" />
+                  </button>
+                )}
+              </div>
+
+              {/* Indicators */}
+              {previewImages.length > 1 && (
+                <div className="absolute bottom-6 flex gap-2">
+                  {previewImages.map((_, idx) => (
+                    <div
+                      key={idx}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        idx === currentPreviewIndex
+                          ? "w-6 bg-white"
+                          : "w-1.5 bg-white/40"
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
+
               <button
-                onClick={() => setPreviewImage(null)}
-                className="absolute top-6 right-6 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/70 transition"
+                onClick={() => setPreviewImages(null)}
+                className="absolute top-6 right-6 bg-white/10 hover:bg-white/20 text-white w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all"
               >
                 ✕
               </button>
